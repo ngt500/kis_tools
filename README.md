@@ -7,6 +7,11 @@ The data can be used to create your own reports / scripts / timelines to plot ti
 	pip3 install pymysql
 	pip3 install kismet_rest
 
+### Setup
+	chmod +x ./kistrack_mac_sql.py
+	chmod +x ./kistrack_mac_csv.py
+	Run SQL query to setup logging table
+
 ### kistrack_mac_sql.py
 Track MAC addresses of interest and log to MySQL
 
@@ -16,11 +21,6 @@ Output: device_key, mac_addr, last_seen, signal_rssi, seenby_uuid
 Track MAC addresses of interest and log to CSV
 
 Output: device_key, mac_addr, last_seen, signal_rssi, seenby_uuid
-
-### Setup
-	chmod +x ./kistrack_mac_sql.py
-	chmod +x ./kistrack_mac_csv.py
-	Run SQL query to setup logging table
 
 ### Usage
 	./kistrack_mac_sql.py -m 00:00:00:00:00:00 -dbu sqlusername -dbn nameofdatabase
