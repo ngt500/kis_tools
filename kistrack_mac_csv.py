@@ -20,7 +20,7 @@ CHECK_INTERVAL = 2
 timestr = time.strftime("%Y-%m-%d-%H-%M-%S")
 
 def main():
-    global DEBUG, VERBOSE, KISMET_HOST, KISMET_USER, KISMET_PASS, KISMET_PORT, KISMET_SSL, KISMET_HTTP_PROTOCOL, MAC_ADDR, CHECK_INTERVAL
+    global DEBUG, VERBOSE, KISMET_HOST, KISMET_USER, KISMET_PASS, KISMET_PORT, KISMET_SSL, KISMET_HTTP_PROTOCOL, KISMET_HTTPS_PROTOCOL, MAC_ADDR, CHECK_INTERVAL
 
     try:
         parser = argparse.ArgumentParser(description="Track MAC addresses of interest and log to CSV")
@@ -72,10 +72,10 @@ def trackMac(api_url):
     while True:
         time.sleep(CHECK_INTERVAL)
         devices = kismet_rest.Devices(username=KISMET_USER, password=KISMET_PASS)
-        for device in devices.by_mac(fields=['kismet.device.base.last_time', 'kismet.device.base.key', 'kismet.device.base.macaddr', 'kismet.device.base.seenby'], devices=[MAC_ADDR]):
+        for device in devices.by_mac(fields=['kismet.device.base.last_time', 'kismet.device.base.key', 'kismet.device.base.macaddr', 'kismet.device.base.seenby', 'kismet.device.base.signal'], devices=[MAC_ADDR]):
             last_time = device['kismet_device_base_last_time']
             seenbyuuid = device['kismet_device_base_seenby'][0]['kismet_common_seenby_uuid']
-            seenbyrssi = device['kismet_device_base_seenby'][0]['kismet_common_seenby_signal']['kismet_common_signal_last_signal']
+            seenbyrssi = device['kismet_device_base_signal']['kismet_common_signal_last_signal']
             device_data = (device['kismet_device_base_key'], device['kismet_device_base_macaddr'], device['kismet_device_base_last_time'], seenbyrssi, seenbyuuid)
             if last_seen_time == last_time:
                 last_seen_time = last_time
