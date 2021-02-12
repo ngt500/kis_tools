@@ -88,18 +88,19 @@ def trackMac(api_url):
     last_seen_time = ''
     while True:
         time.sleep(CHECK_INTERVAL)
+
         devices = kismet_rest.Devices(username=KISMET_USER, password=KISMET_PASS)
         for device in devices.by_mac(fields=['kismet.device.base.last_time', 'kismet.device.base.key', 'kismet.device.base.macaddr', 'kismet.device.base.seenby', 'kismet.device.base.signal'], devices=[MAC_ADDR]):
-            last_time = device['kismet_device_base_last_time']
-            seenbyuuid = device['kismet_device_base_seenby'][0]['kismet_common_seenby_uuid']
-            seenbyrssi = device['kismet_device_base_signal']['kismet_common_signal_last_signal']
-            device_data = (device['kismet_device_base_key'], device['kismet_device_base_macaddr'], device['kismet_device_base_last_time'], seenbyrssi, seenbyuuid)
+            last_time = device['kismet.device.base.last_time']
+            seenbyuuid = device['kismet.device.base.seenby'][0]['kismet.common.seenby.uuid']
+            seenbyrssi = device['kismet.device.base.signal']['kismet.common.signal.last_signal']
+            device_data = (device['kismet.device.base.key'], device['kismet.device.base.macaddr'], device['kismet.device.base.last_time'], seenbyrssi, seenbyuuid)
             if last_seen_time == last_time:
                 last_seen_time = last_time
             else:
                 last_seen_time = last_time
-                print(device["kismet_device_base_key"], device["kismet_device_base_macaddr"], device["kismet_device_base_last_time"], seenbyrssi, seenbyuuid)
-                db = pymysql.connect(DB_HOST,DB_USER,DB_PASS, DB_NAME)
+                print(device["kismet.device.base.key"], device["kismet.device.base.macaddr"], device["kismet.device.base.last_time"], seenbyrssi, seenbyuuid)
+                db = pymysql.connect(host=DB_HOST, user=DB_USER, password=DB_PASS, database=DB_NAME)
                 cursor = db.cursor()
                 sql = "INSERT INTO kis_tracked_mac (device_key, mac_addr,last_seen,signal_rssi,seenby_uuid) VALUES ('%s', '%s','%s','%s','%s')" % (device_data)
                 try:
